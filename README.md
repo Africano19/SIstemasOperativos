@@ -53,10 +53,15 @@ O Multithreading veio no contexto devido ao facto de haver a necessidade de um p
   ## Requisitos Técnicos para o desenvolvimento do projeto
 
    -Sistema baseado em Multithreading;
+   
    -Prevenção da possível corrupção dos dados enquanto houver duas leituras de threads diferentes ao mesmo tempo;
+   
    -Imagens Docker para as instâncias de webserver;
+   
    -Cluster Kubernetes ou OpenShift;
+   
    -Load balancers para equilibrar a carga entre os webservers;
+   
    -Automatização da criação e destruição de containers de webserver com base nas necessidades da aplicação.
 
 ---------------------------------------------------------------------------------------------------------------------------------
@@ -66,8 +71,11 @@ O Multithreading veio no contexto devido ao facto de haver a necessidade de um p
 ![alt text](https://github.com/Africano19/SIstemasOperativos/blob/main/Assets/Imagem%20WhatsApp%202023-02-10%20%C3%A0s%2009.35.30.jpg "Logo Title Text 1")
 
 ## Tecnologias a utilizar
+
    -Linguagens C++;
+   
    -Sistema Operativo a Base de Linux/Windows;
+   
    -Docker com load balancers e Kubernetes;
 
 
