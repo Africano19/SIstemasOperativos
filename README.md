@@ -1,3 +1,5 @@
+![alt text](https://github.com/Africano19/SIstemasOperativos/blob/main/Assets/2f29bd5b6a914b7d341620e46b381d56.png "Logo Title Text 1")
+
 # Proposta do Trabalho Prático
 
 ## Repositório de Ficheiros Distribuído on-line
