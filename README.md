@@ -38,6 +38,7 @@ O Multithreading veio no contexto devido ao facto de haver a necessidade de um p
 
 ## Diagrama de casos de uso
 
+![alt text](https://github.com/Africano19/SIstemasOperativos/blob/main/Assets/Diagrama%20de%20caso%20de%20uso.png "Logo Title Text 1")
 
 ## Solução a implementar
 
@@ -65,6 +66,8 @@ Sistema Operativo a Base de Linux/Windows
 Máquinas Virtuais.
 
 ## Planeamento e calendarização
+
+![alt text](https://github.com/Africano19/SIstemasOperativos/blob/main/Assets/Gr%C3%A1fico%20de%20Gantt%20simples%20(2).png"Logo Title Text 1")
 
 ## A metodologia utilizada foi a pesquisa de papers relacionados com o tema, enriquecido com vários artigos:
 
