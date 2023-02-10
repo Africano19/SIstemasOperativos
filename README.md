@@ -72,12 +72,13 @@ O Multithreading veio no contexto devido ao facto de haver a necessidade de um p
 
 ## Tecnologias a utilizar
 
-   -Linguagens C++;
+   -Linguagens utilizadas: Java;
    
    -Sistema Operativo a Base de Linux/Windows;
    
    -Docker com load balancers e Kubernetes;
 
+---------------------------------------------------------------------------------------------------------------------------------
 
 ## Planeamento e calendarização
 
