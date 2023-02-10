@@ -2,7 +2,8 @@
 
 # Proposta do Trabalho Prático
 
-## Repositório de Ficheiros Distribuído on-line
+## Aplicação Multithreading (WEB Server)
+
 Github:
 https://github.com/Africano19/SIstemasOperativos
 
