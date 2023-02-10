@@ -63,11 +63,13 @@ O Multithreading veio no contexto devido ao facto de haver a necessidade de um p
 
 ## Arquitetura da Solução
 
+![alt text](https://github.com/Africano19/SIstemasOperativos/blob/main/Assets/Imagem%20WhatsApp%202023-02-10%20%C3%A0s%2009.35.30.jpg "Logo Title Text 1")
 
-Tecnologias a utilizar
-Linguagens C++.
-Sistema Operativo a Base de Linux/Windows
-Máquinas Virtuais.
+## Tecnologias a utilizar
+   -Linguagens C++;
+   -Sistema Operativo a Base de Linux/Windows;
+   -Docker com load balancers e Kubernetes;
+
 
 ## Planeamento e calendarização
 
