@@ -1,8 +1,0 @@
-{
-	"username" : null,
-	"password" : null,
-	"port" : 6969,
-	"worker_threads" : 20,
-	"connection_queue" : 30,
-	"www_path" : "C:\\Users\\"
-}
