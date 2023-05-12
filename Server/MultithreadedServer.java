@@ -17,7 +17,7 @@ public class MultithreadedServer {
                 InetAddress clientAddress = socket.getInetAddress();
                 System.out.println("New client connected: " + clientAddress.getHostAddress());
                 new ServerThread(socket).start();
-                createNomadJob("multithreadserver-" + System.currentTimeMillis());
+                createNomadJob("new-task-" + System.currentTimeMillis());
             }
         } catch (IOException ex) {
             System.out.println("Server exception: " + ex.getMessage());
@@ -36,11 +36,11 @@ public class MultithreadedServer {
                         "    count = 1\n" +
                         "\n" +
                         "    task \"serverTask\" {\n" +
-                        "      driver = \"raw_exec\"\n" +
+                        "      driver = \"java\"\n" +
                         "\n" +
                         "      config {\n" +
-                        "        command = \"java\"\n" +
-                        "        args    = [\"-Xms128M\", \"-Xmx256M\", \"-jar\", \"local/multithreaded-server-1.0.0.jar\"]\n" +
+                        "        command = \"/usr/bin/java\"\n" +
+                        "        args    = [\"-Xms128M\", \"-Xmx256M\", \"-jar\", \"https://rubenpassarinho.pt/multithreaded-server-1.0.0.jar\"]\n" +
                         "      }\n" +
                         "\n" +
                         "      resources {\n" +
@@ -68,7 +68,7 @@ public class MultithreadedServer {
             e.printStackTrace();
         }
     }
-
+    
     static class ServerThread extends Thread {
         private Socket socket;
 
@@ -98,7 +98,7 @@ public class MultithreadedServer {
                             requestedFile = "index.html";
                         }
 
-                        InputStream resourceStream = getClass().getResourceAsStream("/resources/" + requestedFile);
+                        InputStream resourceStream = MultithreadedServer.class.getResourceAsStream("/resources/" + requestedFile);
                         if (resourceStream != null) {
                             String mimeType = URLConnection.guessContentTypeFromStream(resourceStream);
                             byte[] fileContent = resourceStream.readAllBytes();
@@ -120,6 +120,7 @@ public class MultithreadedServer {
                 }
 
                 socket.close();
+
             } catch (IOException ex) {
                 System.out.println("Server exception: " + ex.getMessage());
                 ex.printStackTrace();
@@ -127,3 +128,4 @@ public class MultithreadedServer {
         }
     }
 }
+

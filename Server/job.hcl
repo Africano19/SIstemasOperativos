@@ -1,4 +1,4 @@
-job "multithreadserver" {
+job "multithreadedserver" {
   datacenters = ["dc1"]
   type        = "service"
 
@@ -6,11 +6,16 @@ job "multithreadserver" {
     count = 1
 
     task "serverTask" {
-      driver = "raw_exec"
+      driver = "java"
 
       config {
         command = "java"
         args    = ["-Xms128M", "-Xmx256M", "-jar", "local/multithreaded-server-1.0.0.jar"]
+      }
+
+      artifact {
+        source      = "https://rubenpassarinho.pt/multithreaded-server-1.0.0.jar"
+        destination = "local/"
       }
 
       resources {
