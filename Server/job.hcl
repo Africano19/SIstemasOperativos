@@ -2,32 +2,29 @@ job "multithreadedserver" {
   datacenters = ["dc1"]
   type        = "service"
   
-  // Adicionando uma política de atualização
-  update {
-    max_parallel = 1 
-    health_check = "checks" 
-    min_healthy_time = "15s"
-    healthy_deadline = "3m"
-  }
-
   group "serverGroup" {
-    count = 2  // Aumentando a contagem para 2 para melhorar a disponibilidade
-
+    count = 1
+    
     task "serverTask" {
       driver = "java"
 
       config {
-        command = "java"
-        args    = ["-Xms128M", "-Xmx256M", "-jar", "local/multithreaded-server-1.0.0.jar"]
-        // Adicionando variáveis de ambiente
-        env {
-          "JAVA_OPTS" = "-Xmx512m"
-        }
+        jar_path = "local/multithreaded-server-1.0.0.jar"
+        jvm_options = ["-Xms128M", "-Xmx256M"]
       }
 
       artifact {
         source      = "https://rubenpassarinho.pt/multithreaded-server-1.0.0.jar"
         destination = "local/"
+      }
+
+      template {
+        data = <<EOF
+server.port=8080
+nomad.api.url=http://localhost:4646
+EOF
+        destination   = "secrets/config.properties"
+        env           = true
       }
 
       resources {
@@ -40,25 +37,6 @@ job "multithreadedserver" {
             static = 8080
           }
         }
-      }
-
-      // Adicionando verificações de disponibilidade e funcionamento
-      service {
-        name = "multithreadedserver"
-        port = "http"
-        
-        check {
-          type     = "http"
-          path     = "/health"
-          interval = "10s"
-          timeout  = "2s"
-        }
-      }
-
-      // Configuração de logs
-      logs {
-        max_files     = 10
-        max_file_size = 15
       }
     }
   }
