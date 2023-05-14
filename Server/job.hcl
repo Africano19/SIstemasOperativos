@@ -1,16 +1,28 @@
 job "multithreadedserver" {
   datacenters = ["dc1"]
   type        = "service"
+<<<<<<< HEAD
   
   group "serverGroup" {
     count = 1
     
+=======
+
+  group "serverGroup" {
+    count = 1
+
+>>>>>>> parent of d779a98 (update)
     task "serverTask" {
       driver = "java"
 
       config {
+<<<<<<< HEAD
         jar_path = "local/multithreaded-server-1.0.0.jar"
         jvm_options = ["-Xms128M", "-Xmx256M"]
+=======
+        command = "java"
+        args    = ["-Xms128M", "-Xmx256M", "-jar", "local/multithreaded-server-1.0.0.jar"]
+>>>>>>> parent of d779a98 (update)
       }
 
       artifact {
