@@ -2,11 +2,14 @@ job "multithreadedserver" {
   datacenters = ["dc1"]
   type        = "service"
 <<<<<<< HEAD
+<<<<<<< HEAD
   
   group "serverGroup" {
     count = 1
     
 =======
+=======
+>>>>>>> parent of d779a98 (update)
 
   group "serverGroup" {
     count = 1
@@ -22,6 +25,9 @@ job "multithreadedserver" {
 =======
         command = "java"
         args    = ["-Xms128M", "-Xmx256M", "-jar", "local/multithreaded-server-1.0.0.jar"]
+<<<<<<< HEAD
+>>>>>>> parent of d779a98 (update)
+=======
 >>>>>>> parent of d779a98 (update)
       }
 
