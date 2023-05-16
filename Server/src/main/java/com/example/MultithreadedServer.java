@@ -6,6 +6,8 @@ import java.io.*;
 import java.net.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import javax.net.ssl.SSLServerSocket;
+import javax.net.ssl.SSLServerSocketFactory;
 
 // Define a classe principal
 public class MultithreadedServer {
@@ -18,11 +20,18 @@ public class MultithreadedServer {
         // Define o número da porta
         int port = 8080;
 
-    // Cria um ExecutorService com um número fixo de threads
-    ExecutorService executor = Executors.newFixedThreadPool(MAX_THREADS);
+        // Cria um ExecutorService com um número fixo de threads
+        ExecutorService executor = Executors.newFixedThreadPool(MAX_THREADS);
+
+        // Configura o SSL
+        System.setProperty("javax.net.ssl.keyStore", "keystore.jks");
+        System.setProperty("javax.net.ssl.keyStorePassword", "Q1w2E3.A4s5D6");
+
+        // Cria um SSLServerSocketFactory
+        SSLServerSocketFactory factory = (SSLServerSocketFactory) SSLServerSocketFactory.getDefault();
 
         // Tenta criar um socket de servidor, que escuta por conexões TCP recebidas
-        try (ServerSocket serverSocket = new ServerSocket(port)) {
+        try (SSLServerSocket serverSocket = (SSLServerSocket) factory.createServerSocket(port)) {
             // Informa que o servidor foi iniciado e está escutando na porta especificada
             System.out.println("Server is listening on port " + port);
 
@@ -39,9 +48,6 @@ public class MultithreadedServer {
 
                 // Submete a nova tarefa ao executor
                 executor.submit(new ServerThread(socket));
-
-                // Cria um novo thread do servidor para lidar com a conexão do cliente e o inicia
-//                new ServerThread(socket).start();
             }
         } catch (IOException ex) {
             // Imprime qualquer erro que ocorrer com o servidor
@@ -49,8 +55,8 @@ public class MultithreadedServer {
             ex.printStackTrace();
         } finally {
             executor.shutdown();
+        }
     }
-}
 
     // Define a classe ServerThread, que é usada para lidar com as conexões do cliente
     static class ServerThread extends Thread {
