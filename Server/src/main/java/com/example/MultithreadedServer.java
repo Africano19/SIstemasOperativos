@@ -6,12 +6,17 @@ import java.io.*;
 import java.net.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 // Define a classe principal
 public class MultithreadedServer {
 
     // Define o número máximo de threads que podem ser usados para lidar com conexões de cliente
     private static final int MAX_THREADS = 50;
+
+    // Crie uma instância do logger
+    private static final Logger logger = LogManager.getLogger(MultithreadedServer.class);
 
     // Método principal, que é o ponto de entrada do programa
     public static void main(String[] args) throws IOException {
@@ -23,6 +28,8 @@ public class MultithreadedServer {
 
         // Tenta criar um socket de servidor, que escuta por conexões TCP recebidas
         try (ServerSocket serverSocket = new ServerSocket(port)) {
+            logger.info("Server is listening on port " + port);
+
             // Informa que o servidor foi iniciado e está escutando na porta especificada
             System.out.println("Server is listening on port " + port);
 
@@ -35,18 +42,19 @@ public class MultithreadedServer {
                 InetAddress clientAddress = socket.getInetAddress();
 
                 // Informa que um novo cliente foi conectado
-                System.out.println("New client connected: " + clientAddress.getHostAddress());
+                logger.info("New client connected: " + clientAddress.getHostAddress());
 
                 // Submete a nova tarefa ao executor
                 executor.submit(new ServerThread(socket));
 
                 // Cria um novo thread do servidor para lidar com a conexão do cliente e o inicia
 //                new ServerThread(socket).start();
+                executor.submit(new ServerThread(socket));
             }
         } catch (IOException ex) {
-            // Imprime qualquer erro que ocorrer com o servidor
-            System.out.println("Server exception: " + ex.getMessage());
-            ex.printStackTrace();
+
+            logger.error("Server exception: " + ex.getMessage(), ex);
+
         } finally {
             executor.shutdown();
     }
