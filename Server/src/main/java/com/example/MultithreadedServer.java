@@ -22,14 +22,13 @@ public class MultithreadedServer {
             while (true) {
                 // Aceita a conexão do cliente
                 Socket socket = serverSocket.accept();
-                
+
                 // Obtém o endereço do cliente
                 InetAddress clientAddress = socket.getInetAddress();
-                
+
                 // Informa que um novo cliente foi conectado
-                
                 System.out.println("New client connected: " + clientAddress.getHostAddress());
-                
+
                 // Cria um novo thread do servidor para lidar com a conexão do cliente e o inicia
                 new ServerThread(socket).start();
             }
@@ -39,7 +38,7 @@ public class MultithreadedServer {
             ex.printStackTrace();
         }
     }
-    
+
     // Define a classe ServerThread, que é usada para lidar com as conexões do cliente
     static class ServerThread extends Thread {
         // Define o socket que será usado para se comunicar com o cliente
@@ -74,7 +73,7 @@ public class MultithreadedServer {
                     if (line.startsWith("GET")) {
                         // Divide a linha em partes
                         String[] parts = line.split(" ");
-                        
+
                         // Obtém o arquivo solicitado
                         String requestedFile = parts[1].substring(1);
 
@@ -85,50 +84,47 @@ public class MultithreadedServer {
 
                         // Tenta obter o arquivo solicitado dos recursos do classpath
                         InputStream resourceStream = MultithreadedServer.class.getResourceAsStream("/" + requestedFile);
-                        
+
                         // Se o arquivo foi encontrado, envia-o de volta ao cliente
                         if (resourceStream != null) {
-                            // Determina o tipo MIME do arquivo
-                            String mimeType = URLConnection.guessContentTypeFromStream(resourceStream);
-                            
-                                                        // Lê o conteúdo do arquivo
-                                                        byte[] fileContent = resourceStream.readAllBytes();
+                        // Determina o tipo MIME do arquivo
+                        String mimeType = URLConnection.guessContentTypeFromStream(resourceStream);
+                        // Lê o conteúdo do arquivo
+                        byte[] fileContent = resourceStream.readAllBytes();
 
-                                                        // Envia uma resposta HTTP 200 OK ao cliente
-                                                        writer.println("HTTP/1.1 200 OK");
-                                                        // Define o tipo de conteúdo da resposta
-                                                        writer.println("Content-Type: " + mimeType);
-                                                        // Define o tamanho do conteúdo da resposta
-                                                        writer.println("Content-Length: " + fileContent.length);
-                                                        // Envia uma linha vazia para indicar o fim dos cabeçalhos da resposta
-                                                        writer.println();
-                            
-                                                        // Envia o conteúdo do arquivo
-                                                        output.write(fileContent);
-                                                        // Limpa o fluxo de saída
-                                                        output.flush();
-                                                    } else {
-                                                        // Se o arquivo não foi encontrado, envia uma resposta HTTP 404 Not Found
-                                                        writer.println("HTTP/1.1 404 Not Found");
-                                                        // Define o tipo de conteúdo da resposta
-                                                        writer.println("Content-Type: text/html");
-                                                        // Define que o tamanho do conteúdo da resposta é 0
-                                                        writer.println("Content-Length: 0");
-                                                        // Envia uma linha vazia para indicar o fim dos cabeçalhos da resposta
-                                                        writer.println();
-                                                    }
-                                                }
-                                            }
-                            
-                                            // Fecha o socket
-                                            socket.close();
-                            
-                                        } catch (IOException ex) {
-                                            // Imprime qualquer erro que ocorrer com o thread
-                                            System.out.println("Server exception: " + ex.getMessage());
-                                            ex.printStackTrace();
-                                        }
-                                    }
-                                }
-                            }
-                            
+                        // Envia uma resposta HTTP 200 OK ao cliente
+                        sendHttpResponse(writer, output, "HTTP/1.1 200 OK", mimeType, fileContent);
+                    } else {
+                        // Se o arquivo não foi encontrado, envia uma resposta HTTP 404 Not Found
+                        sendHttpResponse(writer, output, "HTTP/1.1 404 Not Found", "text/html", null);
+                    }
+                }
+            }
+
+            // Fecha o socket
+            socket.close();
+
+        } catch (IOException ex) {
+            // Imprime qualquer erro que ocorrer com o thread
+            System.out.println("Server exception: " + ex.getMessage());
+            ex.printStackTrace();
+        }
+    }
+
+    private void sendHttpResponse(PrintWriter writer, OutputStream output, String status, String contentType, byte[] content) throws IOException {
+        writer.println(status);
+        writer.println("Content-Type: " + contentType);
+        if (content != null) {
+            writer.println("Content-Length: " + content.length);
+            writer.println();
+            output.write(content);
+        } else {
+            writer.println("Content-Length: 0");
+            writer.println();
+        }
+        output.flush();
+    }
+}
+}
+
+                        
