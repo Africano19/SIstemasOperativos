@@ -4,14 +4,22 @@ package com.example;
 // Importa as bibliotecas Java necessárias
 import java.io.*;
 import java.net.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 // Define a classe principal
 public class MultithreadedServer {
+
+    // Define o número máximo de threads que podem ser usados para lidar com conexões de cliente
+    private static final int MAX_THREADS = 50;
 
     // Método principal, que é o ponto de entrada do programa
     public static void main(String[] args) throws IOException {
         // Define o número da porta
         int port = 8080;
+
+    // Cria um ExecutorService com um número fixo de threads
+    ExecutorService executor = Executors.newFixedThreadPool(MAX_THREADS);
 
         // Tenta criar um socket de servidor, que escuta por conexões TCP recebidas
         try (ServerSocket serverSocket = new ServerSocket(port)) {
@@ -29,15 +37,20 @@ public class MultithreadedServer {
                 // Informa que um novo cliente foi conectado
                 System.out.println("New client connected: " + clientAddress.getHostAddress());
 
+                // Submete a nova tarefa ao executor
+                executor.submit(new ServerThread(socket));
+
                 // Cria um novo thread do servidor para lidar com a conexão do cliente e o inicia
-                new ServerThread(socket).start();
+//                new ServerThread(socket).start();
             }
         } catch (IOException ex) {
             // Imprime qualquer erro que ocorrer com o servidor
             System.out.println("Server exception: " + ex.getMessage());
             ex.printStackTrace();
-        }
+        } finally {
+            executor.shutdown();
     }
+}
 
     // Define a classe ServerThread, que é usada para lidar com as conexões do cliente
     static class ServerThread extends Thread {
