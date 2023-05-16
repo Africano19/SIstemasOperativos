@@ -43,12 +43,15 @@
 
     <dependencies>
         <dependency>
+<<<<<<< HEAD
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-core</artifactId>
             <version>${log4j.version}</version> <!-- Update this line -->
         </dependency>
         <!-- Add the dependency for HttpClient -->
         <dependency>
+=======
+>>>>>>> parent of 2798320 (Fourth)
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
             <version>${httpclient.version}</version>
