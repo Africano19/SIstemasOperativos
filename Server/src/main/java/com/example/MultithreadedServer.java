@@ -24,7 +24,7 @@ public class MultithreadedServer {
         String keystoreFileLocation = "/Users/bolt_40n/Documents/GitHub/SIstemasOperativos/Server/keystore.jks";
 
         // Senha do keystore
-        String keystorePassword = "Q1w2E3.A4s5D6";
+        String keystorePassword = "q1w2e3.a4s5d6";
 
         // Cria um ExecutorService com um número fixo de threads
         ExecutorService executor = Executors.newFixedThreadPool(MAX_THREADS);
