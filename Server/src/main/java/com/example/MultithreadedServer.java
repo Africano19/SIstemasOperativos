@@ -21,7 +21,7 @@ public class MultithreadedServer {
         int port = 8080;
 
         // Localização do keystore
-        String keystoreFileLocation = "Server/keystore.jks";
+        String keystoreFileLocation = "/Users/bolt_40n/Documents/GitHub/SIstemasOperativos/Server/keystore.jks";
 
         // Senha do keystore
         String keystorePassword = "Q1w2E3.A4s5D6";
