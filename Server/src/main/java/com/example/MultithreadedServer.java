@@ -4,8 +4,6 @@ package com.example;
 // Importa as bibliotecas Java necessárias
 import java.io.*;
 import java.net.*;
-import java.security.KeyStore;
-import javax.net.ssl.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -16,43 +14,22 @@ public class MultithreadedServer {
     private static final int MAX_THREADS = 50;
 
     // Método principal, que é o ponto de entrada do programa
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) throws IOException {
         // Define o número da porta
         int port = 8080;
 
-        // Localização do keystore
-        String keystoreFileLocation = "/Users/bolt_40n/Documents/GitHub/SIstemasOperativos/Server/keystore.jks";
-
-        // Senha do keystore
-        String keystorePassword = "q1w2e3a4s5d6";
-
-        // Cria um ExecutorService com um número fixo de threads
-        ExecutorService executor = Executors.newFixedThreadPool(MAX_THREADS);
-
-        // Cria o keystore
-        KeyStore ks = KeyStore.getInstance("JKS");
-        ks.load(new FileInputStream(keystoreFileLocation), keystorePassword.toCharArray());
-
-        // Cria o gerenciador de chaves
-        KeyManagerFactory kmf = KeyManagerFactory.getInstance("SunX509");
-        kmf.init(ks, keystorePassword.toCharArray());
-
-        // Cria o contexto SSL
-        SSLContext sslContext = SSLContext.getInstance("TLS");
-        sslContext.init(kmf.getKeyManagers(), null, null);
-
-        // Cria a fábrica de sockets do servidor
-        SSLServerSocketFactory ssf = sslContext.getServerSocketFactory();
+    // Cria um ExecutorService com um número fixo de threads
+    ExecutorService executor = Executors.newFixedThreadPool(MAX_THREADS);
 
         // Tenta criar um socket de servidor, que escuta por conexões TCP recebidas
-        try (SSLServerSocket serverSocket = (SSLServerSocket) ssf.createServerSocket(port)) {
+        try (ServerSocket serverSocket = new ServerSocket(port)) {
             // Informa que o servidor foi iniciado e está escutando na porta especificada
             System.out.println("Server is listening on port " + port);
 
             // Entra em um loop infinito para aceitar conexões contínuas
             while (true) {
                 // Aceita a conexão do cliente
-                SSLSocket socket = (SSLSocket) serverSocket.accept();
+                Socket socket = serverSocket.accept();
 
                 // Obtém o endereço do cliente
                 InetAddress clientAddress = socket.getInetAddress();
@@ -62,15 +39,18 @@ public class MultithreadedServer {
 
                 // Submete a nova tarefa ao executor
                 executor.submit(new ServerThread(socket));
+
+                // Cria um novo thread do servidor para lidar com a conexão do cliente e o inicia
+//                new ServerThread(socket).start();
             }
         } catch (IOException ex) {
-            // Imprime qualquer erro que ocorrer com o servidor 
+            // Imprime qualquer erro que ocorrer com o servidor
             System.out.println("Server exception: " + ex.getMessage());
             ex.printStackTrace();
         } finally {
             executor.shutdown();
-        }
     }
+}
 
     // Define a classe ServerThread, que é usada para lidar com as conexões do cliente
     static class ServerThread extends Thread {
