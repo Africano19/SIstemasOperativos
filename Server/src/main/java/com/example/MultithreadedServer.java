@@ -1,60 +1,62 @@
-// Define o pacote
 package com.example;
 
-// Importa as bibliotecas Java necessárias
 import java.io.*;
 import java.net.*;
+import java.security.KeyStore;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import javax.net.ssl.SSLServerSocket;
-import javax.net.ssl.SSLServerSocketFactory;
+import javax.net.ssl.*;
 
-// Define a classe principal
 public class MultithreadedServer {
-
-    // Define o número máximo de threads que podem ser usados para lidar com conexões de cliente
     private static final int MAX_THREADS = 50;
 
-    // Método principal, que é o ponto de entrada do programa
-    public static void main(String[] args) throws IOException {
-        // Define o número da porta
+    public static void main(String[] args) {
         int port = 8080;
-
-        // Cria um ExecutorService com um número fixo de threads
         ExecutorService executor = Executors.newFixedThreadPool(MAX_THREADS);
 
-        // Configura o SSL
-        System.setProperty("javax.net.ssl.keyStore", "keystore.jks");
-        System.setProperty("javax.net.ssl.keyStorePassword", "Q1w2E3.A4s5D6");
+        // Defina o caminho do seu keystore
+        String keystorePath = "/Users/bolt_40n/Documents/GitHub/SIstemasOperativos/Server/keystore.jks";
 
-        // Cria um SSLServerSocketFactory
-        SSLServerSocketFactory factory = (SSLServerSocketFactory) SSLServerSocketFactory.getDefault();
+        // Defina a senha do seu keystore
+        String keystorePassword = "Q1w2E3.A4s5D6";
 
-        // Tenta criar um socket de servidor, que escuta por conexões TCP recebidas
-        try (SSLServerSocket serverSocket = (SSLServerSocket) factory.createServerSocket(port)) {
-            // Informa que o servidor foi iniciado e está escutando na porta especificada
-            System.out.println("Server is listening on port " + port);
-
-            // Entra em um loop infinito para aceitar conexões contínuas
-            while (true) {
-                // Aceita a conexão do cliente
-                Socket socket = serverSocket.accept();
-
-                // Obtém o endereço do cliente
-                InetAddress clientAddress = socket.getInetAddress();
-
-                // Informa que um novo cliente foi conectado
-                System.out.println("New client connected: " + clientAddress.getHostAddress());
-
-                // Submete a nova tarefa ao executor
-                executor.submit(new ServerThread(socket));
+        try {
+            // Carregue o keystore
+            KeyStore keystore = KeyStore.getInstance(KeyStore.getDefaultType());
+            try (FileInputStream fis = new FileInputStream(keystorePath)) {
+                keystore.load(fis, keystorePassword.toCharArray());
             }
-        } catch (IOException ex) {
-            // Imprime qualquer erro que ocorrer com o servidor
-            System.out.println("Server exception: " + ex.getMessage());
-            ex.printStackTrace();
-        } finally {
-            executor.shutdown();
+
+            // Crie a fábrica de gerenciadores de chaves
+            KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
+            keyManagerFactory.init(keystore, keystorePassword.toCharArray());
+
+            // Crie o contexto SSL
+            SSLContext sslContext = SSLContext.getInstance("TLS");
+            sslContext.init(keyManagerFactory.getKeyManagers(), null, null);
+
+            // Crie a fábrica de sockets SSL
+            SSLServerSocketFactory sslServerSocketFactory = sslContext.getServerSocketFactory();
+
+            // Crie o socket do servidor
+            try (SSLServerSocket serverSocket = (SSLServerSocket) sslServerSocketFactory.createServerSocket(port)) {
+                System.out.println("Server is listening on port " + port);
+
+                while (true) {
+                    Socket socket = serverSocket.accept();
+                    InetAddress clientAddress = socket.getInetAddress();
+                    System.out.println("New client connected: " + clientAddress.getHostAddress());
+
+                    executor.submit(new ServerThread(socket));
+                }
+            } catch (IOException ex) {
+                System.out.println("Server exception: " + ex.getMessage());
+                ex.printStackTrace();
+            } finally {
+                executor.shutdown();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
