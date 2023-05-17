@@ -21,10 +21,10 @@ public class MultithreadedServer {
         int port = 8080;
 
         // Localização do keystore
-        String keystoreFileLocation = "/path/to/your/keystore.jks";
+        String keystoreFileLocation = "Server/keystore.jks";
 
         // Senha do keystore
-        String keystorePassword = "keystorePassword";
+        String keystorePassword = "Q1w2E3.A4s5D6";
 
         // Cria um ExecutorService com um número fixo de threads
         ExecutorService executor = Executors.newFixedThreadPool(MAX_THREADS);
